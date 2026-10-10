@@ -55,9 +55,10 @@ each.
    plain X/Y/Z/Rx/Ry/Rz set; less pretty labeling in Star Citizen's bind
    screen, but it actually registers.
 5. Under **POV Hat Switch**, select **Continuous** with **4** POVs — one
-   each for POV1 (main hat), POV2 (thumb hat), and reserved slots for the
-   Throttle Hat and Mouse Hat (POV3/4; only Mouse Hat is actually wired up
-   today, Throttle Hat is dead hardware).
+   each for POV1 (main hat), POV2 (left-thumb mini-hat), and reserved slots
+   for the Throttle Hat and Mouse Hat (POV3/4; only Mouse Hat is actually
+   wired up by default, Throttle Hat is dead hardware on the original dev's
+   unit — see "Known hardware fault" below if yours works).
 6. Click **Apply** (not just OK — OK alone can close the dialog without
    saving; the status line at the bottom should stop reading "Changes not
    applied").
@@ -93,6 +94,17 @@ Move one control at a time and watch which `aN=` value changes. Update
 script currently passes axes through positionally regardless, 0->X ... 5->Rz,
 so this step is about labeling, not required for it to work).
 
+The same idea works for buttons and hats:
+
+```
+python src/remapper.py --calibrate-buttons
+```
+
+Prints each button's physical index live as you press it (`button 14 ->
+DOWN`). Useful for finding a hat's up/down/left/right indices one direction
+at a time — this is exactly how POV2's and POV4's button mappings in
+`config.json` were worked out.
+
 ## Running it
 
 ```
@@ -106,21 +118,32 @@ time, in-game, same as binding any other controller.
 `python src/remapper.py --list-devices` lists connected joysticks if you
 need to sanity-check names/indices.
 
-## Known hardware fault: throttle hat
+## Known hardware fault: Throttle Hat (POV3)
 
-The small hat switch on the throttle grip does not register at all — not in
-this tool's SDL2 capture, and not in the Windows/Saitek DirectInput test
-panel either. Since even the OS-level panel sees nothing, this is almost
-certainly a real physical/electrical fault inside the 20+ year old throttle
-unit (broken contact, cracked solder joint, loose ribbon cable), not
-something software can work around.
+The official Saitek driver names 4 separate hats: POV1, POV2, Throttle Hat,
+and Mouse Hat. On the original dev's unit, the **Throttle Hat** (physical
+SDL indices 18-21) does not register at all — not in this tool's SDL2
+capture, and not in the Windows/Saitek DirectInput test panel either. Since
+even the OS-level panel sees nothing, this is almost certainly a real
+physical/electrical fault inside the 20+ year old throttle unit (broken
+contact, cracked solder joint, loose ribbon cable), not something software
+can work around. It's left disabled in `config.json` (`disabled_buttons`,
+and `pov3_throttle_hat.enabled: false`).
 
-It's left disabled in `config.json` (`disabled_buttons`, physical indices
-18-25, which mix the throttle hat with the mouse hat — the exact split
-between the two was never verified live since nothing fired). The remapper
-is fully usable without it: 22 other confirmed-working digital buttons, the
-main hat, and all 6 axes are already wired up. Re-enable once the throttle
-unit is repaired and someone captures live which indices actually move.
+**If your Throttle Hat isn't dead**, it's worth enabling: the physical
+button range (18-21) almost certainly carries over to other X45 units since
+it's the same hardware/driver, but the up/down/left/right *order* within
+those 4 was never verified live (couldn't be, on hardware that doesn't
+respond) — `config.json`'s `pov3_throttle_hat.buttons` is an unverified
+guess extrapolated from POV2's pattern. Confirm it with
+`python src/remapper.py --calibrate-buttons` (press one direction at a
+time, note which index fires), fix the mapping if needed, flip `enabled` to
+`true`, and you'll also need to bump vJoy's POV count — it's already
+configured for 4, so no vJoy changes needed, just the config edit.
+
+Either way, the remapper is fully usable without it: the Mouse Hat (POV4),
+POV1, POV2, all 8 fire buttons across all 9 Mode/Aux layers, and all 6 axes
+are already wired up regardless.
 
 ## Layout reference
 

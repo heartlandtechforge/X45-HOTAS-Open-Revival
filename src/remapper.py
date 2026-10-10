@@ -5,17 +5,22 @@ joystick, so Star Citizen (or anything else) just sees one clean virtual
 device. No SST, no console macros, no legacy .NET dependency.
 
 Layering: the Mode switch (3-way) and Aux slider (3-way) together select one
-of 9 layers. Each of the 12 "layered" physical buttons (8 fire buttons + the
-POV2 mini-hat) gets remapped to a different vJoy virtual button per layer, so
-the same physical button can mean something different in each Mode/Aux
-combination -- done entirely in software, replacing what the old SST .pr0
-profiles tried to do with console macros.
+of 9 layers. Each of the 8 "layered" physical fire buttons gets remapped to
+a different vJoy virtual button per layer, so the same physical button can
+mean something different in each Mode/Aux combination -- done entirely in
+software, replacing what the old SST .pr0 profiles tried to do with console
+macros. The hat switches (POV1-4) are NOT layered -- same direction in every
+layer, matching how the Saitek driver itself treats them.
 
 Usage:
-    python remapper.py                  run the remapper
-    python remapper.py --calibrate-axes  print live axis values to help
-                                          label config.json's axis_order
-    python remapper.py --list-devices    list connected joysticks and exit
+    python remapper.py                    run the remapper
+    python remapper.py --calibrate-axes    print live axis values to help
+                                            label config.json's axis_order
+    python remapper.py --calibrate-buttons print live button DOWN/up events
+                                            to find physical button indices
+                                            for a hat or control config.json
+                                            doesn't already know about
+    python remapper.py --list-devices      list connected joysticks and exit
 """
 import argparse
 import json
@@ -81,6 +86,28 @@ def calibrate_axes(joy: pygame.joystick.Joystick):
             vals = [round(joy.get_axis(i), 3) for i in range(joy.get_numaxes())]
             print("\r" + " | ".join(f"a{i}={v:+.3f}" for i, v in enumerate(vals)), end="", flush=True)
             time.sleep(0.05)
+    except KeyboardInterrupt:
+        print()
+
+
+def calibrate_buttons(joy: pygame.joystick.Joystick):
+    """Print DOWN/up events as they happen, so a single direction/button can be
+    pressed in isolation to find its physical index -- e.g. for figuring out a
+    hat's up/down/left/right buttons on hardware this project hasn't mapped yet
+    (such as a Throttle Hat that's dead on the original dev's unit but working
+    on yours)."""
+    print(f"{joy.get_name()}: {joy.get_numbuttons()} buttons. "
+          "Press one button/direction at a time. Ctrl+C to stop.\n")
+    last = [False] * joy.get_numbuttons()
+    try:
+        while True:
+            pygame.event.pump()
+            for b in range(joy.get_numbuttons()):
+                v = bool(joy.get_button(b))
+                if v != last[b]:
+                    print(f"button {b} -> {'DOWN' if v else 'up'}")
+                    last[b] = v
+            time.sleep(0.02)
     except KeyboardInterrupt:
         print()
 
@@ -215,6 +242,7 @@ def run(cfg):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--calibrate-axes", action="store_true")
+    parser.add_argument("--calibrate-buttons", action="store_true")
     parser.add_argument("--list-devices", action="store_true")
     args = parser.parse_args()
 
@@ -230,6 +258,11 @@ def main():
     if args.calibrate_axes:
         joy = find_joystick(cfg["device_name_match"])
         calibrate_axes(joy)
+        return
+
+    if args.calibrate_buttons:
+        joy = find_joystick(cfg["device_name_match"])
+        calibrate_buttons(joy)
         return
 
     run(cfg)

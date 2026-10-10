@@ -30,8 +30,9 @@ files rather than doing real hardware-level remapping. This project instead:
 - Windows with the X45 plugged in and its SD6 driver installed (for the
   physical device to show up at all).
 - [vJoy](https://github.com/BrunnerInnovation/vJoy/releases) installed.
-- Python 3.13 (not 3.14 yet — `pygame` has no prebuilt wheel for it as of
-  this writing). This was built against
+- Python 3.13 (not 3.14 — `pygame` 2.6.1 has wheels up through cp313 but
+  none for cp314 on PyPI, confirmed 2026-10-09; installing on 3.14 falls
+  back to a source build and fails). This was built against
   `C:\Users\<you>\AppData\Local\Programs\Python\Python313\python.exe`.
 
 ```

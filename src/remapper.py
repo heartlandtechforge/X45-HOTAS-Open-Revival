@@ -31,15 +31,19 @@ import vjoy_interface as vj
 CONFIG_PATH = pathlib.Path(__file__).resolve().parent.parent / "config.json"
 
 # Physical-control name (as used in config.json's axis_order) -> vJoy HID usage.
-# Throttle and rudder get this fork's dedicated axes (HID_USAGE_THROTTLE /
-# HID_USAGE_RUDDER) rather than generic Z/Rx, so they show up labeled in
-# Star Citizen's bind screen instead of as an unlabeled rotation axis.
+# Tried this fork's dedicated Rudder/Throttle/Slider/Dial usages first, but
+# its HID report descriptor puts Rudder (0xBA) and Throttle (0xBB) on the
+# Generic Desktop usage page under non-standard usage IDs -- outside the
+# page's normal 0x30-0x39 axis range -- so generic axis parsers (confirmed:
+# the Windows joystick test panel) don't recognize them as axes at all.
+# Sticking to the plain, universally-recognized set instead: less pretty
+# labeling in Star Citizen's bind screen, but it actually registers.
 AXIS_USAGE_BY_NAME = {
     "stick_x": vj.HID_USAGE_X,
     "stick_y": vj.HID_USAGE_Y,
-    "throttle": vj.HID_USAGE_THROTTLE,
-    "rudder": vj.HID_USAGE_RUDDER,
-    "knob_1": vj.HID_USAGE_Z,
+    "throttle": vj.HID_USAGE_Z,
+    "rudder": vj.HID_USAGE_RX,
+    "knob_1": vj.HID_USAGE_RY,
     "knob_2": vj.HID_USAGE_RZ,
 }
 

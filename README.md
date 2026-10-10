@@ -46,18 +46,34 @@ a POV and 6 axes on vJoy device #1, but vJoy defaults to far fewer buttons.
 2. Select device **#1**.
 3. Set **Number of Buttons** to at least **108** (128 is the max and is a
    safe round number to pick).
-4. Under **Axes**, check **X, Y, Z, Rz, Rudder, Throttle** (6 total — this
-   fork of vJoy has dedicated Rudder/Throttle HID axes, separate from the
-   generic X/Y/Z/Rx/Ry/Rz set, and the remapper uses those dedicated ones so
-   they show up labeled in Star Citizen's bind screen instead of as an
-   unlabeled rotation axis. `Rx`/`Ry` aren't used — leave them unchecked).
+4. Under **Axes**, check **X, Y, Z, Rx, Ry, Rz** only. This vJoy fork also
+   offers dedicated Rudder/Throttle/Slider/Dial axes with nicer labels, but
+   its HID report descriptor puts Rudder/Throttle on non-standard usage IDs
+   that generic axis parsers (confirmed: the Windows joystick test panel)
+   don't recognize as axes at all — they silently don't work. Stick to the
+   plain X/Y/Z/Rx/Ry/Rz set; less pretty labeling in Star Citizen's bind
+   screen, but it actually registers.
 5. Under **POV Hat Switch**, select **Continuous** with **1** POV.
 6. Click **Apply** (not just OK — OK alone can close the dialog without
    saving; the status line at the bottom should stop reading "Changes not
    applied").
+7. **Changing the axis set after the device already exists requires a reset
+   to take effect**: open Device Manager, find **vJoy Device**, right-click
+   → **Disable device**, then right-click → **Enable device** again.
+   Confirmed necessary in testing — Apply alone updated the stored config
+   but not the live device until this reset.
 
 Run `python src/remapper.py` afterward — it checks the configured button
 count on startup and will warn (not crash) if it's still too low.
+
+**Testing the output:** Windows' built-in joystick test panel (`joy.cpl`)
+uses an old API that only displays the first ~32 buttons, so with 128
+buttons configured, only Mode 1's buttons (vJoy buttons 1-36) will visibly
+light up there — Mode 2/3 presses are likely working but off the end of
+what that panel can show. Use vJoy's own `JoyMonitor.exe`
+(`C:\Program Files\vJoy\x64\JoyMonitor.exe`) instead for a real check across
+the full button and axis range, or just test directly in Star Citizen's
+bind screen.
 
 ## Figuring out the axis order
 

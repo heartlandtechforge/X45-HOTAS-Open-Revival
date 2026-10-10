@@ -1,5 +1,7 @@
 # X45 HOTAS Open Revival
 
+Don't have an X45 yet? [Find one on eBay](https://www.ebay.com/sch/i.html?_nkw=SAITEk+x45&_sacat=0&_from=R40&_trksid=p2334524.m570.l1313&_odkw=x45&_osacat=0).
+
 Open-source remapper that brings the 20+ year old Saitek X45 HOTAS back to
 life on modern Windows, for Star Citizen or anything else that reads a
 joystick — no SST required.

@@ -1,8 +1,8 @@
-# X45-OpenHOTAS
+# X45 Revival
 
-Open-source remapper for the Saitek X45 HOTAS, built to replace Saitek's
-old SST software for use with Star Citizen (or anything else that reads a
-joystick).
+Open-source remapper that brings the 20+ year old Saitek X45 HOTAS back to
+life on modern Windows, for Star Citizen or anything else that reads a
+joystick — no SST required.
 
 SST (2016, v6.6.6.9) needs the legacy .NET Framework 2.0/3.5 runtime, which
 can fail to install on modern Windows, and its "9 mode" profile setup turned
@@ -10,18 +10,20 @@ out to just fire console macros (`pp_rebindkeys ...`) to swap keybind XML
 files rather than doing real hardware-level remapping. This project instead:
 
 - Reads the X45 directly via SDL2 (`pygame`) — confirmed to see all 26
-  buttons, 6 axes, and the main hat, unlike the older `winmm` Windows
+  buttons, 6 axes, and all 4 hats, unlike the older `winmm` Windows
   joystick API, which silently drops some of them (notably the Mode switch).
 - Computes a layer from the Mode switch (3-way) x Aux slider (3-way) = 9
   layers, same idea as the old SST profiles.
-- Remaps 12 physical buttons (8 fire buttons + the POV2 mini-hat) onto a
-  different vJoy virtual button per layer, so the same physical button can
-  do something different depending on Mode/Aux position.
-- Passes the 6 analog axes and the main POV hat straight through.
+- Remaps the 8 fire buttons onto a different vJoy virtual button per layer,
+  so the same physical button can do something different depending on
+  Mode/Aux position.
+- Passes the 6 analog axes and all 4 hats (POV1, POV2, Throttle Hat, Mouse
+  Hat — same layout the official Saitek driver uses) straight through,
+  unlayered.
 - Outputs through [vJoy](https://github.com/BrunnerInnovation/vJoy) (the
   actively maintained fork — not vjoystick.net, which has a malware
-  warning), so Star Citizen just sees one normal virtual joystick. No
-  console macros, no SST, no .NET fights.
+  warning), so Star Citizen (or any other game) just sees one normal
+  virtual joystick. No console macros, no SST, no .NET fights.
 
 ## Requirements
 

@@ -1,4 +1,4 @@
-# X45 Revival
+# X45 HOTAS Open Revival
 
 Open-source remapper that brings the 20+ year old Saitek X45 HOTAS back to
 life on modern Windows, for Star Citizen or anything else that reads a

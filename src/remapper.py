@@ -1,4 +1,4 @@
-"""X45 Revival remapper.
+"""X45 HOTAS Open Revival remapper.
 
 Reads the Saitek X45 directly via SDL2 (pygame) and drives a vJoy virtual
 joystick, so Star Citizen (or anything else) just sees one clean virtual

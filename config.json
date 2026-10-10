@@ -34,7 +34,7 @@
   ],
 
   "disabled_buttons": {
-    "_comment": "Physical 18-25 (throttle hat + mouse hat). Throttle hat confirmed dead (2026-10-08): nothing registers in SDL2 OR the Windows/Saitek DirectInput test panel -- almost certainly a real electrical fault inside the throttle unit, not a driver/API gap. Exact split between 'throttle hat' vs 'mouse hat' within 18-25 was never verified live since nothing fired. Leave disabled until the throttle unit is repaired and someone re-captures which indices actually move.",
+    "_comment": "Physical 18-25 (throttle hat + mouse hat). The official Saitek SD6 driver's own DirectInput property panel names 4 separate hats: 'POV 1', 'POV 2', 'Throttle Hat', 'Mouse Hat'. In our SDL numbering, POV1 is the one true continuous SDL hat (pov1 section below), POV2 is physical 14-17 (layered_buttons above, confirmed working), and this disabled_buttons block covers the driver's 'Throttle Hat' + 'Mouse Hat' together (never separated since nothing fires from either). Throttle Hat confirmed dead (2026-10-08): nothing registers in SDL2 OR the Windows/Saitek DirectInput test panel -- almost certainly a real electrical fault inside the throttle unit, not a driver/API gap. Leave disabled until the throttle unit is repaired and someone re-captures which indices actually move.",
     "enabled": false,
     "physical_range": [18, 25]
   },

@@ -129,6 +129,13 @@ def hat_to_degrees(hat_xy):
     return table.get((x, y))
 
 
+def buttons_to_hat_xy(joy, button_cfg):
+    """4 discrete up/down/left/right buttons -> a hat_to_degrees-style (x, y) tuple."""
+    x = int(bool(joy.get_button(button_cfg["right"]))) - int(bool(joy.get_button(button_cfg["left"])))
+    y = int(bool(joy.get_button(button_cfg["up"]))) - int(bool(joy.get_button(button_cfg["down"])))
+    return (x, y)
+
+
 def run(cfg):
     joy = find_joystick(cfg["device_name_match"])
     print(f"Using physical device: {joy.get_name()}")
@@ -189,6 +196,14 @@ def run(cfg):
             if cfg["pov1"].get("enabled") and joy.get_numhats() > 0:
                 degrees = hat_to_degrees(joy.get_hat(0))
                 device.set_pov_degrees(cfg["pov1"]["vjoy_pov_index"], degrees)
+
+            # POV2/3/4: synthesized from 4 discrete up/down/left/right buttons
+            # (the hardware reports these as plain buttons, not a real SDL hat).
+            for key in ("pov2", "pov3_throttle_hat", "pov4_mouse_hat"):
+                pov_cfg = cfg.get(key)
+                if pov_cfg and pov_cfg.get("enabled") and pov_cfg.get("buttons"):
+                    degrees = hat_to_degrees(buttons_to_hat_xy(joy, pov_cfg["buttons"]))
+                    device.set_pov_degrees(pov_cfg["vjoy_pov_index"], degrees)
 
             time.sleep(0.004)
     except KeyboardInterrupt:

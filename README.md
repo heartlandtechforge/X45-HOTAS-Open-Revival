@@ -38,13 +38,14 @@ pip install -r requirements.txt
 
 ## One-time setup: configure the vJoy device
 
-The remapper needs 108 virtual buttons (12 physical buttons x 9 layers) plus
-a POV and 6 axes on vJoy device #1, but vJoy defaults to far fewer buttons.
+The remapper needs 72 virtual buttons (8 physical fire buttons x 9 layers)
+plus 4 POVs and 6 axes on vJoy device #1, but vJoy defaults to far fewer of
+each.
 
 1. Run **Configure vJoy** as Administrator (Start menu, or
    `C:\Program Files\vJoy\x64\vJoyConf.exe`).
 2. Select device **#1**.
-3. Set **Number of Buttons** to at least **108** (128 is the max and is a
+3. Set **Number of Buttons** to at least **72** (128 is the max and is a
    safe round number to pick).
 4. Under **Axes**, check **X, Y, Z, Rx, Ry, Rz** only. This vJoy fork also
    offers dedicated Rudder/Throttle/Slider/Dial axes with nicer labels, but
@@ -53,7 +54,10 @@ a POV and 6 axes on vJoy device #1, but vJoy defaults to far fewer buttons.
    don't recognize as axes at all — they silently don't work. Stick to the
    plain X/Y/Z/Rx/Ry/Rz set; less pretty labeling in Star Citizen's bind
    screen, but it actually registers.
-5. Under **POV Hat Switch**, select **Continuous** with **1** POV.
+5. Under **POV Hat Switch**, select **Continuous** with **4** POVs — one
+   each for POV1 (main hat), POV2 (thumb hat), and reserved slots for the
+   Throttle Hat and Mouse Hat (POV3/4; only Mouse Hat is actually wired up
+   today, Throttle Hat is dead hardware).
 6. Click **Apply** (not just OK — OK alone can close the dialog without
    saving; the status line at the bottom should stop reading "Changes not
    applied").

@@ -47,7 +47,7 @@
   },
 
   "pov2": {
-    "_comment": "Small left-thumb mini-hat on the throttle grip (official driver name: 'POV 2'), confirmed working. SDL reports it as 4 separate digital buttons rather than a real hat, so the remapper synthesizes a POV direction from their combined state (supports diagonals if the hardware can report two adjacent directions at once) and drives vJoy continuous POV #2. Deliberately NOT layered by Mode/Aux -- same direction in every layer, matching how the Saitek driver itself treats it as a plain hat. Physical button order is clockwise from Up (14=Up,15=Right,16=Down,17=Left), NOT the up/down/left/right sequence the original button-map notes assumed -- corrected live (2026-10-09) after the vJoy POV2 output came out rotated.",
+    "_comment": "Left thumb hat on the throttle grip (official driver name: 'POV 2'), confirmed working. SDL reports it as 4 separate digital buttons rather than a real hat, so the remapper synthesizes a POV direction from their combined state (supports diagonals if the hardware can report two adjacent directions at once) and drives vJoy continuous POV #2. Deliberately NOT layered by Mode/Aux -- same direction in every layer, matching how the Saitek driver itself treats it as a plain hat. Physical button order is clockwise from Up (14=Up,15=Right,16=Down,17=Left), NOT the up/down/left/right sequence the original button-map notes assumed -- corrected live (2026-10-09) after the vJoy POV2 output came out rotated.",
     "enabled": true,
     "vjoy_pov_index": 2,
     "buttons": {"up": 14, "down": 16, "left": 17, "right": 15}

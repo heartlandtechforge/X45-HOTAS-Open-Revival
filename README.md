@@ -58,7 +58,7 @@ each.
    plain X/Y/Z/Rx/Ry/Rz set; less pretty labeling in Star Citizen's bind
    screen, but it actually registers.
 5. Under **POV Hat Switch**, select **Continuous** with **4** POVs — one
-   each for POV1 (main hat), POV2 (left-thumb mini-hat), and reserved slots
+   each for POV1 (main hat), POV2 (left thumb hat), and reserved slots
    for the Throttle Hat and Mouse Hat (POV3/4; only Mouse Hat is actually
    wired up by default, Throttle Hat is dead hardware on the original dev's
    unit — see "Known hardware fault" below if yours works).

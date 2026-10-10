@@ -1,0 +1,108 @@
+# X45-OpenHOTAS
+
+Open-source remapper for the Saitek X45 HOTAS, built to replace Saitek's
+old SST software for use with Star Citizen (or anything else that reads a
+joystick).
+
+SST (2016, v6.6.6.9) needs the legacy .NET Framework 2.0/3.5 runtime, which
+can fail to install on modern Windows, and its "9 mode" profile setup turned
+out to just fire console macros (`pp_rebindkeys ...`) to swap keybind XML
+files rather than doing real hardware-level remapping. This project instead:
+
+- Reads the X45 directly via SDL2 (`pygame`) — confirmed to see all 26
+  buttons, 6 axes, and the main hat, unlike the older `winmm` Windows
+  joystick API, which silently drops some of them (notably the Mode switch).
+- Computes a layer from the Mode switch (3-way) x Aux slider (3-way) = 9
+  layers, same idea as the old SST profiles.
+- Remaps 12 physical buttons (8 fire buttons + the POV2 mini-hat) onto a
+  different vJoy virtual button per layer, so the same physical button can
+  do something different depending on Mode/Aux position.
+- Passes the 6 analog axes and the main POV hat straight through.
+- Outputs through [vJoy](https://github.com/BrunnerInnovation/vJoy) (the
+  actively maintained fork — not vjoystick.net, which has a malware
+  warning), so Star Citizen just sees one normal virtual joystick. No
+  console macros, no SST, no .NET fights.
+
+## Requirements
+
+- Windows with the X45 plugged in and its SD6 driver installed (for the
+  physical device to show up at all).
+- [vJoy](https://github.com/BrunnerInnovation/vJoy/releases) installed.
+- Python 3.13 (not 3.14 yet — `pygame` has no prebuilt wheel for it as of
+  this writing). This was built against
+  `C:\Users\<you>\AppData\Local\Programs\Python\Python313\python.exe`.
+
+```
+pip install -r requirements.txt
+```
+
+## One-time setup: configure the vJoy device
+
+The remapper needs 108 virtual buttons (12 physical buttons x 9 layers) plus
+a POV and 6 axes on vJoy device #1, but vJoy defaults to far fewer buttons.
+
+1. Run **Configure vJoy** as Administrator (Start menu, or
+   `C:\Program Files\vJoy\x64\vJoyConf.exe`).
+2. Select device **#1**.
+3. Set **Number of Buttons** to at least **108** (128 is the max and is a
+   safe round number to pick).
+4. Enable axes **X, Y, Z, Rx, Ry, Rz**.
+5. Enable **1 Continuous POV** hat.
+6. Apply.
+
+Run `python src/remapper.py` afterward — it checks the configured button
+count on startup and will warn (not crash) if it's still too low.
+
+## Figuring out the axis order
+
+Which pygame axis index (0-5) corresponds to which physical control (stick
+X/Y, throttle, rudder, 2 rotary knobs) was never recorded. Find out with:
+
+```
+python src/remapper.py --calibrate-axes
+```
+
+Move one control at a time and watch which `aN=` value changes. Update
+`axis_order` in `config.json` to match for documentation purposes (the
+script currently passes axes through positionally regardless, 0->X ... 5->Rz,
+so this step is about labeling, not required for it to work).
+
+## Running it
+
+```
+python src/remapper.py
+```
+
+Leave it running, then in Star Citizen open its own keybinding screen and
+bind actions to the vJoy virtual device's buttons/axes/POV as usual — one
+time, in-game, same as binding any other controller.
+
+`python src/remapper.py --list-devices` lists connected joysticks if you
+need to sanity-check names/indices.
+
+## Known hardware fault: throttle hat
+
+The small hat switch on the throttle grip does not register at all — not in
+this tool's SDL2 capture, and not in the Windows/Saitek DirectInput test
+panel either. Since even the OS-level panel sees nothing, this is almost
+certainly a real physical/electrical fault inside the 20+ year old throttle
+unit (broken contact, cracked solder joint, loose ribbon cable), not
+something software can work around.
+
+It's left disabled in `config.json` (`disabled_buttons`, physical indices
+18-25, which mix the throttle hat with the mouse hat — the exact split
+between the two was never verified live since nothing fired). The remapper
+is fully usable without it: 22 other confirmed-working digital buttons, the
+main hat, and all 6 axes are already wired up. Re-enable once the throttle
+unit is repaired and someone captures live which indices actually move.
+
+## Layout reference
+
+The original SST `.pr0` profiles and the one real keybind layout they
+produced (the other 8 of the "9 mode" XMLs were byte-identical copies) are
+decoded into `reference/X45_Star_Citizen_Button_Map.xlsx` for reference,
+alongside the full project notes in `reference/X45_Project_Notes.md`.
+
+## License
+
+MIT — see `LICENSE`.

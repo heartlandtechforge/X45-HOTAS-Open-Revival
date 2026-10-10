@@ -1,0 +1,52 @@
+{
+  "_comment": "Confirmed via live SDL2 capture on 2026-10-08. Button indices are 0-indexed pygame/SDL indices from the X45's own numbering, not vJoy's (vJoy buttons are 1-indexed virtual outputs).",
+
+  "device_name_match": "Saitek X45",
+  "vjoy_rid": 1,
+
+  "mode_switch_buttons": {
+    "_comment": "3-way Mode switch (M1/M2/M3). Exactly one is held down at a time. Selects which layer of the layered_buttons below is active.",
+    "M1": 8,
+    "M2": 9,
+    "M3": 10
+  },
+
+  "aux_slider_buttons": {
+    "_comment": "3-position Aux slider. Combined with Mode to pick 1 of 9 layers (3 mode x 3 aux), same idea the old SST .pr0 used, but done in software with real vJoy buttons instead of console macros.",
+    "A1": 11,
+    "A2": 12,
+    "A3": 13
+  },
+
+  "layered_buttons": [
+    {"physical": 0, "name": "Trigger"},
+    {"physical": 1, "name": "Fire A"},
+    {"physical": 2, "name": "Fire B"},
+    {"physical": 3, "name": "Launch"},
+    {"physical": 4, "name": "Fire D"},
+    {"physical": 5, "name": "Mouse Fire"},
+    {"physical": 6, "name": "Pinkie"},
+    {"physical": 7, "name": "Fire C"},
+    {"physical": 14, "name": "POV2 Up"},
+    {"physical": 15, "name": "POV2 Down"},
+    {"physical": 16, "name": "POV2 Left"},
+    {"physical": 17, "name": "POV2 Right"}
+  ],
+
+  "disabled_buttons": {
+    "_comment": "Physical 18-25 (throttle hat + mouse hat). Throttle hat confirmed dead (2026-10-08): nothing registers in SDL2 OR the Windows/Saitek DirectInput test panel -- almost certainly a real electrical fault inside the throttle unit, not a driver/API gap. Exact split between 'throttle hat' vs 'mouse hat' within 18-25 was never verified live since nothing fired. Leave disabled until the throttle unit is repaired and someone re-captures which indices actually move.",
+    "enabled": false,
+    "physical_range": [18, 25]
+  },
+
+  "axes": {
+    "_comment": "6 analog axes confirmed working (stick X/Y, throttle, rudder, 2 rotary knobs), but which pygame axis index (0-5) is which physical control was NOT recorded. Run 'python src/remapper.py --calibrate-axes' and move one control at a time to find out, then fill in axis_order below with the physical names in pygame-axis-index order. Until then axes just pass through 0->X, 1->Y, 2->Z, 3->RX, 4->RY, 5->RZ blindly, which is fine for first boot but may need swapping.",
+    "axis_order": ["stick_x", "stick_y", "throttle", "rudder", "knob_1", "knob_2"]
+  },
+
+  "pov1": {
+    "_comment": "Main hat switch, passed straight through to vJoy continuous POV #1.",
+    "enabled": true,
+    "vjoy_pov_index": 1
+  }
+}

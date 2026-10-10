@@ -30,14 +30,18 @@ import vjoy_interface as vj
 
 CONFIG_PATH = pathlib.Path(__file__).resolve().parent.parent / "config.json"
 
-AXIS_USAGE_ORDER = [
-    vj.HID_USAGE_X,
-    vj.HID_USAGE_Y,
-    vj.HID_USAGE_Z,
-    vj.HID_USAGE_RX,
-    vj.HID_USAGE_RY,
-    vj.HID_USAGE_RZ,
-]
+# Physical-control name (as used in config.json's axis_order) -> vJoy HID usage.
+# Throttle and rudder get this fork's dedicated axes (HID_USAGE_THROTTLE /
+# HID_USAGE_RUDDER) rather than generic Z/Rx, so they show up labeled in
+# Star Citizen's bind screen instead of as an unlabeled rotation axis.
+AXIS_USAGE_BY_NAME = {
+    "stick_x": vj.HID_USAGE_X,
+    "stick_y": vj.HID_USAGE_Y,
+    "throttle": vj.HID_USAGE_THROTTLE,
+    "rudder": vj.HID_USAGE_RUDDER,
+    "knob_1": vj.HID_USAGE_Z,
+    "knob_2": vj.HID_USAGE_RZ,
+}
 
 
 def load_config():
@@ -139,6 +143,13 @@ def run(cfg):
     last_layer = None
     last_button_state = {}
 
+    axis_order = cfg["axes"].get("axis_order", [])
+    unknown_axis_names = [n for n in axis_order if n not in AXIS_USAGE_BY_NAME]
+    if unknown_axis_names:
+        print(f"WARNING: unrecognized axis name(s) in config.json axis_order, "
+              f"skipping: {unknown_axis_names}")
+    axis_usages = [AXIS_USAGE_BY_NAME[name] for name in axis_order if name in AXIS_USAGE_BY_NAME]
+
     try:
         while True:
             pygame.event.pump()
@@ -165,12 +176,11 @@ def run(cfg):
                     device.set_button(vbtn, pressed)
                     last_button_state[physical] = pressed
 
-            if cfg["axes"].get("axis_order"):
-                for i, usage in enumerate(AXIS_USAGE_ORDER):
-                    if i >= joy.get_numaxes():
-                        break
-                    if device.has_axis(usage):
-                        device.set_axis(usage, norm_axis_to_vjoy(joy.get_axis(i)))
+            for i, usage in enumerate(axis_usages):
+                if i >= joy.get_numaxes():
+                    break
+                if device.has_axis(usage):
+                    device.set_axis(usage, norm_axis_to_vjoy(joy.get_axis(i)))
 
             if cfg["pov1"].get("enabled") and joy.get_numhats() > 0:
                 degrees = hat_to_degrees(joy.get_hat(0))

@@ -46,9 +46,15 @@ a POV and 6 axes on vJoy device #1, but vJoy defaults to far fewer buttons.
 2. Select device **#1**.
 3. Set **Number of Buttons** to at least **108** (128 is the max and is a
    safe round number to pick).
-4. Enable axes **X, Y, Z, Rx, Ry, Rz**.
-5. Enable **1 Continuous POV** hat.
-6. Apply.
+4. Under **Axes**, check **X, Y, Z, Rz, Rudder, Throttle** (6 total — this
+   fork of vJoy has dedicated Rudder/Throttle HID axes, separate from the
+   generic X/Y/Z/Rx/Ry/Rz set, and the remapper uses those dedicated ones so
+   they show up labeled in Star Citizen's bind screen instead of as an
+   unlabeled rotation axis. `Rx`/`Ry` aren't used — leave them unchecked).
+5. Under **POV Hat Switch**, select **Continuous** with **1** POV.
+6. Click **Apply** (not just OK — OK alone can close the dialog without
+   saving; the status line at the bottom should stop reading "Changes not
+   applied").
 
 Run `python src/remapper.py` afterward — it checks the configured button
 count on startup and will warn (not crash) if it's still too low.

@@ -40,7 +40,7 @@
   },
 
   "axes": {
-    "_comment": "6 analog axes confirmed working (stick X/Y, throttle, rudder, 2 rotary knobs), but which pygame axis index (0-5) is which physical control was NOT recorded. Run 'python src/remapper.py --calibrate-axes' and move one control at a time to find out, then fill in axis_order below with the physical names in pygame-axis-index order. Until then axes just pass through 0->X, 1->Y, 2->Z, 3->RX, 4->RY, 5->RZ blindly, which is fine for first boot but may need swapping.",
+    "_comment": "6 analog axes confirmed working (stick X/Y, throttle, rudder, 2 rotary knobs), but which pygame axis index (0-5) is which physical control was NOT recorded. Run 'python src/remapper.py --calibrate-axes' and move one control at a time to find out, then reorder the axis_order list below to match pygame-axis-index order (position 0 in the list = pygame axis 0, etc). Each name maps to a vJoy HID usage in remapper.py's AXIS_USAGE_BY_NAME: stick_x->X, stick_y->Y, throttle->dedicated Throttle axis, rudder->dedicated Rudder axis, knob_1->Z, knob_2->Rz. The order below is a guess for first boot and likely needs reordering after calibration.",
     "axis_order": ["stick_x", "stick_y", "throttle", "rudder", "knob_1", "knob_2"]
   },
 
